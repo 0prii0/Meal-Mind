@@ -4,9 +4,10 @@ import type { Recipe } from "../types/recipe";
 
 interface RecipeCardProps {
   recipe: Recipe;
+  onSelect: (recipe: Recipe) => void;
 }
 
-const RecipeCard = ({ recipe }: RecipeCardProps) => {
+const RecipeCard = ({ recipe, onSelect }: RecipeCardProps) => {
   return (
     <motion.div
       className="border rounded-xl shadow-md p-4 hover:shadow-lg transition bg-white"
@@ -14,6 +15,7 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
+      onClick={() => onSelect(recipe)}
     >
       <img
         src={recipe.strMealThumb}

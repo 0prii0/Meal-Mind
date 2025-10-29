@@ -4,4 +4,5 @@ export interface Recipe {
   strCategory: string;
   strMealThumb: string;
   strSource?: string;
+  strInstructions: string;
 }
