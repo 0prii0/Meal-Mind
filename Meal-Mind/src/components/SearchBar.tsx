@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import { motion } from "framer-motion";
 
 interface SearchBarProps {
@@ -12,6 +12,8 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
     e.preventDefault();
     onSearch(query);
   };
+
+
 
   return (
     <motion.form
