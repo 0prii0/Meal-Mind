@@ -5,7 +5,11 @@ import {motion} from 'framer-motion'
 import { AnimatePresence } from "framer-motion";
 import RecipeModal from './components/RecipeModal';
 import RecipeCard from './components/RecipeCard';
-import SearchBar from '../src/components/Searchbar';
+import SearchBar from './components/SearchBar'
+import { Routes, Route } from "react-router-dom";
+import Home from './pages/Home';
+import About from './pages/About';
+import Recipes from './pages/Recipes';
 
 
 function App() {
@@ -24,6 +28,11 @@ function App() {
   return (
   <div className="min-h-screen bg-gray-50">
       <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/recipes" element={<Recipes />} />
+      </Routes>
       <SearchBar onSearch={fetchRecipes} />
 
       <motion.div
