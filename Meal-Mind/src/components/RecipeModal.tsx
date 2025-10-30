@@ -1,58 +1,99 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import type { Recipe } from "../types/recipe";
 
 interface RecipeModalProps {
-  recipe: Recipe | null;
+  recipe: Recipe;
   onClose: () => void;
 }
 
 const RecipeModal = ({ recipe, onClose }: RecipeModalProps) => {
-  if (!recipe) return null;
+  const [fullRecipe, setFullRecipe] = useState<Recipe | null>(null);
+
+  useEffect(() => {
+    const fetchFullRecipe = async () => {
+      try {
+        const res = await fetch(
+          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipe.idMeal}`
+        );
+        const data = await res.json();
+        if (data.meals && data.meals[0]) {
+          setFullRecipe(data.meals[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching recipe details:", error);
+      }
+    };
+
+    fetchFullRecipe();
+  }, [recipe.idMeal]);
+
+  const meal = fullRecipe || recipe;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <motion.div
-        className="bg-white rounded-2xl shadow-2xl p-6 w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 relative overflow-y-auto max-h-[90vh]"
-        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.8, y: 50 }}
+        className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-lg p-6 relative"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
-        {/* Close Button */}
         <button
+          className="absolute top-4 right-4 text-gray-600 hover:text-red-500 text-2xl font-bold"
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold"
         >
-          ✕
+          ×
         </button>
 
-        {/* Recipe Content */}
+        <h2 className="text-3xl font-bold text-orange-600 mb-4 text-center">
+          {meal.strMeal}
+        </h2>
+
         <img
-          src={recipe.strMealThumb}
-          alt={recipe.strMeal}
-          className="rounded-xl mb-4 w-full object-cover h-56"
+          src={meal.strMealThumb}
+          alt={meal.strMeal}
+          className="w-full rounded-xl mb-4 shadow-md"
         />
-        <h2 className="text-2xl font-bold mb-2 text-gray-800">{recipe.strMeal}</h2>
-        <p className="text-sm text-gray-500 mb-3">Category: {recipe.strCategory}</p>
 
-        {recipe.strInstructions && (
-          <p className="text-gray-700 text-sm leading-relaxed mb-3">
-            {recipe.strInstructions.slice(0, 300)}...
-          </p>
-        )}
+        {fullRecipe ? (
+          <>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              🍴 Ingredients
+            </h3>
+            <ul className="list-disc list-inside mb-4 text-gray-700 space-y-1">
+              {Array.from({ length: 20 })
+                .map((_, i) => ({
+                  ingredient: meal[`strIngredient${i + 1}`],
+                  measure: meal[`strMeasure${i + 1}`],
+                }))
+                .filter((item) => item.ingredient && item.ingredient.trim() !== "")
+                .map((item, i) => (
+                  <li key={i}>
+                    {item.ingredient} – {item.measure}
+                  </li>
+                ))}
+            </ul>
 
-        {recipe.strSource && (
-          <a
-            href={recipe.strSource}
-            target="_blank"
-            rel="noreferrer"
-            className="text-orange-600 hover:text-orange-700 font-semibold"
-          >
-            View Full Recipe →
-          </a>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              🧾 Instructions
+            </h3>
+            <p className="text-gray-600 whitespace-pre-line leading-relaxed">
+              {meal.strInstructions}
+            </p>
+
+            
+          </>
+        ) : (
+          <p className="text-gray-500 text-center">Loading details...</p>
         )}
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
