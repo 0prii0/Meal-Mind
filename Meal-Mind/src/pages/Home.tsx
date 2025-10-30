@@ -9,16 +9,27 @@ import RecipeModal from "../components/RecipeModal";
 const Home = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
    const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+   const [showNoResultPopup, setShowNoResultPopup] = useState(false);
+
+
   const fetchRecipes = async (query: string) => {
     const res = await fetch(
       `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
     );
     const data = await res.json();
-    setRecipes(data.meals || []);
+    
+    
+     if (!data.meals) {
+      setRecipes([]);
+      setShowNoResultPopup(true);
+      setTimeout(() => setShowNoResultPopup(false), 2500); // hide after 2.5s
+    } else {
+      setRecipes(data.meals);
+    }
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
     <motion.div
       className="flex flex-col items-center justify-center text-center py-20 px-6"
       initial={{ opacity: 0 }}
@@ -36,6 +47,12 @@ const Home = () => {
 
 
       <SearchBar onSearch={fetchRecipes} />
+      </motion.div>
+
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-8 pb-12"
+        layout
+      >
        {recipes.length > 0 ? (
           recipes.map((r) => <RecipeCard key={r.idMeal} recipe={r} onSelect={setSelectedRecipe} />)
         ) : (
@@ -43,8 +60,23 @@ const Home = () => {
             No recipes found. Try searching for "chicken" or "pasta".
           </p>
         )}
+</motion.div>
+    
+<AnimatePresence>
+        {showNoResultPopup && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+            transition={{ duration: 0.4 }}
+            className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-red-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg z-50"
+          >
+            ❌ No recipes found. Try a different search!
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-    </motion.div>
+
     <AnimatePresence>
         {selectedRecipe && (
           <RecipeModal

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 const About = () => {
   return (
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
     <motion.div
       className="max-w-3xl mx-auto py-20 px-6 text-center"
       initial={{ opacity: 0 }}
@@ -23,6 +24,7 @@ const About = () => {
         API. Whether you’re a home cook or a foodie, MealMind inspires your next dish with simplicity and style.
       </p>
     </motion.div>
+    </div>
   );
 };
 
