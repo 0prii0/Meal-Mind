@@ -1,10 +1,14 @@
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 
-
 const Navbar = () => {
-  const linkClass =
-    "hover:text-orange-600 transition font-medium";
+  
+  const getLinkClass = ({ isActive }: { isActive: boolean }): string => {
+    const baseClasses = "hover:text-orange-600 transition font-medium";
+    return isActive
+      ? `${baseClasses} text-orange-600` 
+            : `${baseClasses} text-gray-700`; 
+  };
 
   return (
     <motion.nav
@@ -13,17 +17,17 @@ const Navbar = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <h1 className="text-2xl font-bold text-orange-600">MealMind</h1>
-      <ul className="flex gap-6 text-gray-700 font-semibold">
-        <NavLink to="/home" className={linkClass}>
+      <NavLink to="/">
+        <h1 className="text-2xl font-bold text-orange-600">MealMind</h1>
+      </NavLink>
+      <ul className="flex gap-6 font-semibold">
+        <NavLink to="/home" className={getLinkClass}>
           Home
         </NavLink>
-
-        <NavLink to="/recipes" className={linkClass}>
+        <NavLink to="/recipes" className={getLinkClass}>
           Recipes
         </NavLink>
-        
-        <NavLink to="/about" className={linkClass}>
+        <NavLink to="/about" className={getLinkClass}>
           About
         </NavLink>
       </ul>
