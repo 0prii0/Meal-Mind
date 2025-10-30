@@ -46,7 +46,7 @@ const Home = () => {
 
 
 
-      <SearchBar onSearch={fetchRecipes} />
+      <SearchBar onSearch={fetchRecipes} searchMode={"dish"} />
       </motion.div>
 
       <motion.div

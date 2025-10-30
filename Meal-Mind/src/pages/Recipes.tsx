@@ -73,7 +73,7 @@ const Recipes = () => {
 
 
       </motion.div>
-      <SearchBar onSearch={fetchRecipes} />
+      <SearchBar onSearch={fetchRecipes} searchMode={searchMode} />
 
       <motion.div
 

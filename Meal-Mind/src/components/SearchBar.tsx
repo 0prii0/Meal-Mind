@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
+  searchMode: "dish" | "ingredient"; 
 }
 
-const SearchBar = ({ onSearch }: SearchBarProps) => {
+const SearchBar = ({ onSearch, searchMode }: SearchBarProps) => {
   const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,7 +26,11 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
     >
      <input
         type="text"
-        placeholder="Search recipes by ingredient..."
+        placeholder={
+          searchMode === "dish"
+            ? "Search recipes by dish name..."
+            : "Search recipes by ingredient..."
+        }
         className="border border-gray-300 rounded-l-lg px-4 py-2 w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
